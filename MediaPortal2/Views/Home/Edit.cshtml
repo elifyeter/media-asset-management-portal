@@ -1,0 +1,33 @@
+﻿@model MediaPortal2.Models.MediaAsset
+@{
+    ViewData["Title"] = "Edit Asset";
+}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-sm" style="width: 100%; max-width: 600px;">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Edit Details</h5>
+        </div>
+        <div class="card-body">
+            <form action="/Home/Edit" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Title</label>
+                    <input type="text" name="title" class="form-control" value="@Model.Title" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tags</label>
+                    <input type="text" name="tags" class="form-control" value="@Model.Tags" />
+                    <small class="text-muted">Separate multiple tags with commas.</small>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="/Home/Index" class="btn btn-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

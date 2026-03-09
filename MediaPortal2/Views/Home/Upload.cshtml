@@ -1,0 +1,121 @@
+﻿@{
+    ViewData["Title"] = "Upload File";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4 fw-light">Upload New Media</h2>
+
+    <form id="hiddenForm" action="/Home/Upload" method="post" enctype="multipart/form-data" style="display:none;">
+        <input type="file" name="file" id="realFileInput" required />
+        <input type="text" name="title" id="hiddenTitle" />
+        <input type="text" name="tags" id="hiddenTags" />
+    </form>
+
+    <div id="dropZone" class="upload-box d-flex flex-column align-items-center justify-content-center text-muted shadow-sm">
+        <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 5rem;"></i>
+        <h4 class="mt-3">Drag & Drop Files Here</h4>
+        <p>or click to select from your computer</p>
+    </div>
+</div>
+
+<div class="modal fade" id="dataEntryModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">File Details</h5>
+                <button type="button" class="btn-close" onclick="location.reload()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-secondary text-truncate" id="fileNameDisplay"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="modalTitle" class="form-control" placeholder="Ex: Summer Vacation">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tags</label>
+                    <input type="text" id="modalTags" class="form-control" placeholder="Ex: Nature, Sea, 2025">
+                    <small class="text-muted">Separate multiple tags with commas.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="location.reload()">Cancel</button>
+                <button class="btn btn-success px-4" onclick="submitForm()">Save & Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .upload-box {
+        border: 3px dashed #ced4da;
+        border-radius: 20px;
+        height: 350px;
+        background-color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .upload-box:hover, .upload-box.dragover {
+            border-color: #0d6efd;
+            background-color: #f1f8ff;
+            transform: scale(1.01);
+        }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('realFileInput');
+            
+            const modalElement = document.getElementById('dataEntryModal');
+            const modal = new bootstrap.Modal(modalElement);
+
+            dropZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault(); 
+                e.stopPropagation();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('dragover');
+
+                if (e.dataTransfer.files.length > 0) {
+                    processFile(e.dataTransfer.files);
+                }
+            });
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    processFile(fileInput.files);
+                }
+            });
+
+            function processFile(files) {
+                fileInput.files = files; 
+                document.getElementById('fileNameDisplay').innerText = "Selected: " + files[0].name;
+                modal.show(); 
+            }
+
+            window.submitForm = function() {
+                document.getElementById('hiddenTitle').value = document.getElementById('modalTitle').value;
+                document.getElementById('hiddenTags').value = document.getElementById('modalTags').value;
+                document.getElementById('hiddenForm').submit();
+            }
+        });
+    </script>
+}
